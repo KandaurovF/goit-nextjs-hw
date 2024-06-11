@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '@/app/components/header';
+import Header from '@/app/components/Header';
 
 export interface PageProps {
   params: { id: string };
