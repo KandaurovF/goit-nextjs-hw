@@ -1,4 +1,5 @@
 import AddCompanyButton from './components/AddCompanyButton';
+import MagicButton from './components/Magic-button';
 import StatusLabel, { Status } from './components/StatusLabel';
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
       </StatusLabel> */}
 
       <AddCompanyButton />
+      <MagicButton />
     </main>
   );
 }

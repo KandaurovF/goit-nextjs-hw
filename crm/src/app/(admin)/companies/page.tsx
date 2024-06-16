@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '@/app/components/header';
+import Header from '@/app/components/Header';
 import Toolbar from '@/app/components/Toolbar';
 import SearchInput from '@/app/components/SearchInput';
 import CompanyTable from '@/app/components/CompanyTable';
