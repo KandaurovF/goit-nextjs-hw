@@ -1,111 +1,164 @@
-export const getSummaryStats = () => {
-  return Promise.resolve({
-    promotions: 427,
-    categories: 8,
-    newCompanies: 28,
-    activeCompanies: 670,
-  });
-};
+export interface SummaryStats {
+  promotions: number;
+  categories: number;
+  newCompanies: number;
+  activeCompanies: number;
+}
 
-export const getSummarySales = () => {
-  const items = [];
-  for (let i = 0; i < 6; i++) {
-    items.push({
-      companyId: i + 1,
-      companyTitle: 'Costco Wholesale',
-      sold: 459,
-      income: 600,
-    });
+export interface SummarySales {
+  id: string;
+  companyId: string;
+  companyTitle: string;
+  totalSold: number;
+  totalIncome: number;
+}
+
+export interface Country {
+  countryId: string;
+  countryTitle: string;
+  companyCount: number;
+}
+
+export interface Category {
+  categoryId: string;
+  categoryTitle: string;
+  companyCount: number;
+}
+
+export enum CompanyStatus {
+  Active = 'active',
+  NotActive = 'notActive',
+  Pending = 'pending',
+  Suspended = 'suspended',
+}
+
+export interface Company {
+  id: string;
+  title: string;
+  description: string;
+  status: CompanyStatus;
+  joinedDate: string;
+  hasPromotions: boolean;
+  categoryId: string;
+  categoryTitle: string;
+  countryId: string;
+  countryTitle: string;
+  avatar?: string;
+}
+
+export interface Promotion {
+  _id: string;
+  title: string;
+  description: string;
+  discount: number;
+  companyId: string;
+  companyTitle: string;
+  avatar?: string;
+}
+
+const BASE_URL = 'http://localhost:4000/api';
+
+const buildUrl = (...paths: string[]) => `${BASE_URL}/${paths.join('/')}`;
+
+const stringifyQueryParams = (params: Record<string, string>) =>
+  new URLSearchParams(params).toString();
+
+const sendRequest = async <T>(url: string, init?: RequestInit) => {
+  try {
+    console.log(`Sending request to URL: ${url}`);
+    const res = await fetch(url, init);
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error(`Request failed with status ${res.status}: ${errorText}`);
+      throw new Error(errorText);
+    }
+
+    const data = await res.json() as T;
+    console.log(`Response data:`, data);
+    return data;
+
+  } catch (error) {
+    console.error(`Error in sendRequest: ${error}`);
+    throw error;
   }
-
-  return Promise.resolve(items);
 };
 
-export const getSummaryPromotions = () => {
-  const items = [];
-  for (let i = 0; i < 7; i++) {
-    items.push({
-      promotionId: i + 1,
-      promotionName: 'Lorem ipsum dolor',
-      companyTitle: 'Costco Wholesale',
-      discount: 40,
-    });
+export const getSummaryStats = async (init?: RequestInit) => {
+  try {
+    const data = await sendRequest<SummaryStats>(buildUrl('summary-stats'), init);
+    // console.log('SummaryStats data: ', data);
+    return data
+  } catch (error) {
+    // console.error(`Error fatching SummaryStats: ${error}`);
+    throw error;
   }
-
-  return Promise.resolve(items);
 };
 
-export const getSummaryCategories = () => {
-  return Promise.resolve([
-    {
-      categoryId: 1,
-      categoryTitle: 'Products',
-      count: 4,
-    },
-    {
-      categoryId: 2,
-      categoryTitle: 'Products',
-      count: 8,
-    },
-    {
-      categoryId: 3,
-      categoryTitle: 'Products',
-      count: 26,
-    },
-    {
-      categoryId: 4,
-      categoryTitle: 'Products',
-      count: 1,
-    },
-    {
-      categoryId: 5,
-      categoryTitle: 'Products',
-      count: 37,
-    },
-    {
-      categoryId: 6,
-      categoryTitle: 'Products',
-      count: 22,
-    },
-    {
-      categoryId: 7,
-      categoryTitle: 'Products',
-      count: 4,
-    },
-    {
-      categoryId: 8,
-      categoryTitle: 'Products',
-      count: 4,
-    },
-  ]);
+export const getSummarySales = async (init?: RequestInit) => {
+  try {
+    const data = await sendRequest<SummarySales[]>(buildUrl('sales', 'summary'), init);
+    // console.log(`SummarySales data: `, data);
+    return data;
+  } catch (error) {
+    // console.error(`Error fatching SummarySales: ${error}`);
+    throw error;
+  }
+ };
+
+export const getCountries = async(init?: RequestInit) => {
+try {
+  const data = await sendRequest<Country[]>(buildUrl('countries'), init);
+  // console.log(`Countries data: ${data}`);
+  return data;
+} catch (error) {
+  // console.error(`Error fatching Countries: ${error}`);
+  throw error;
+}
+  };
+
+export const getCategories = async (init?: RequestInit) => {
+  try {
+    const data = await sendRequest<Category[]>(buildUrl('categories'), init);
+    // console.log(`Categories data: ${data}`);
+    return data;
+  } catch (error) {
+    // console.error(`Error fatching Categories: ${error}`);
+    throw error;
+  }
 };
 
-export const getSummaryCountries = () => {
-  return Promise.resolve([
-    {
-      countryId: 1,
-      countryTitle: 'Canada',
-      count: 4,
-    },
-    {
-      countryId: 2,
-      countryTitle: 'USA',
-      count: 4,
-    },
-    {
-      countryId: 3,
-      countryTitle: 'Italia',
-      count: 2,
-    },
-    {
-      countryId: 4,
-      countryTitle: 'Ukraine',
-      count: 2,
-    },
-    {
-      countryId: 5,
-      countryTitle: 'Spain',
-      count: 2,
-    },
-  ]);
+export const getCompanies = async (init?: RequestInit) => {
+  try {
+    const data = await sendRequest<Company[]>(buildUrl('companies'), init);
+    // console.log('Companies Data:', data)
+    return data;
+  
+  } catch (error) {
+    // console.error("Error fatching companies: ", error);
+    throw error;
+  }
+ 
 };
+
+export const getCompany = (id: string, init?: RequestInit) => {
+  // return sendRequest<Company>(buildUrl('companies', id), init);
+  return {};
+};
+
+export const getPromotions = async (
+  params: Record<string, string> = {},
+  init?: RequestInit,
+) => {
+  try {
+    const data = await sendRequest<Promotion[]>(
+    `${buildUrl('promotions')}?${stringifyQueryParams(params)}`,
+    init,
+    );
+    console.log(`Promotions data: ${data}`);
+    return data;
+  } catch (error) {
+    console.error(`Error fatching Promotions: ${error}`);
+    throw error;
+  }
+};
+

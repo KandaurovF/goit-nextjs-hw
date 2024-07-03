@@ -1,30 +1,67 @@
-import React from 'react';
-import Image from 'next/image';
+'use client';
+
+import React, { useEffect, useMemo, useState } from 'react';
+
+import dynamic from 'next/dynamic';
+
+// import Image from 'next/image';
 import clsx from 'clsx';
-import { getSummaryCountries } from '@/app/lib/api';
+import { Country, getCountries } from '@/app/lib/api';
 import DashboardCard from '@/app/components/common/DashboardCard';
+
+import { GeocodedCountryData } from '@/app/components/Map/Geocode';
 
 export interface PageProps {}
 
-export default async function Page({}: PageProps) {
-  const data = await getSummaryCountries();
+const Page: React.FC<PageProps> = () => {
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [geocodedData, setGeocodedData] = useState<GeocodedCountryData[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getCountries();
+      setCountries(data);
+
+      // Dynamically import the geocodeCountries function
+      const { geocodeCountries } = await import('@/app/components/Map/Geocode');
+      const geocoded = await geocodeCountries(data);
+      setGeocodedData(geocoded);
+    };
+
+    fetchData();
+  }, []);
+
+  const Map = useMemo(
+    () =>
+      dynamic(() => import('@/app/components/Map/index'), {
+        loading: () => <p>Map is loading...</p>,
+        ssr: false,
+      }),
+    [],
+  );
 
   return (
     <DashboardCard label="Countries of companies">
       <div className="flex items-end pb-5 px-5 gap-2">
         <div>
-          {data.map(({ countryId, countryTitle, count }) => (
+          {countries.map(({ countryId, countryTitle, companyCount }) => (
             <p
               key={countryId}
               className={clsx(
                 'text-sm text-gray-900 font-medium',
                 'before:inline-block before:w-2 before:h-2 before:rounded-full before:align-middle before:mr-2 before:bg-purple-200',
               )}
-            >{`${countryTitle} - ${count}`}</p>
+            >{`${countryTitle} - ${companyCount}`}</p>
           ))}
         </div>
-        <Image width={395} height={260} src="/img/World.png" alt="world" />
+        {/* <Image width={395} height={260} src="/img/World.png" alt="world" /> */}
+        <div className="bg-white-700 mx-auto  w-[395px] h-[260px]">
+          {/* <Map posix={[4.79029, -75.69003]} /> */}
+          <Map data={geocodedData} />
+        </div>
       </div>
     </DashboardCard>
   );
-}
+};
+
+export default Page;
