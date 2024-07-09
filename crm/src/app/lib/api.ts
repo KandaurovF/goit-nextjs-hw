@@ -19,6 +19,13 @@ export interface Country {
   companyCount: number;
 }
 
+export interface City {
+  _id: string;
+  title: string;
+  countryTitle: string;
+  companyTitles: string[];
+}
+
 export interface Category {
   categoryId: string;
   categoryTitle: string;
@@ -74,7 +81,7 @@ const sendRequest = async <T>(url: string, init?: RequestInit) => {
     }
 
     const data = await res.json() as T;
-    console.log(`Response data:`, data);
+    // console.log(`Response data:`, data);
     return data;
 
   } catch (error) {
@@ -89,7 +96,7 @@ export const getSummaryStats = async (init?: RequestInit) => {
     // console.log('SummaryStats data: ', data);
     return data
   } catch (error) {
-    // console.error(`Error fatching SummaryStats: ${error}`);
+    console.error(`Error fatching SummaryStats: ${error}`);
     throw error;
   }
 };
@@ -100,7 +107,7 @@ export const getSummarySales = async (init?: RequestInit) => {
     // console.log(`SummarySales data: `, data);
     return data;
   } catch (error) {
-    // console.error(`Error fatching SummarySales: ${error}`);
+    console.error(`Error fatching SummarySales: ${error}`);
     throw error;
   }
  };
@@ -111,7 +118,7 @@ try {
   // console.log(`Countries data: ${data}`);
   return data;
 } catch (error) {
-  // console.error(`Error fatching Countries: ${error}`);
+  console.error(`Error fatching Countries: ${error}`);
   throw error;
 }
   };
@@ -122,10 +129,21 @@ export const getCategories = async (init?: RequestInit) => {
     // console.log(`Categories data: ${data}`);
     return data;
   } catch (error) {
-    // console.error(`Error fatching Categories: ${error}`);
+    console.error(`Error fatching Categories: ${error}`);
     throw error;
   }
 };
+
+export const getCities = async (init?: RequestInit) => {
+  try {
+    const data = await sendRequest<City[]>(buildUrl('cities'), init);
+    // console.log(`Cities data: ${data}`);
+    return data;
+  } catch (error) {
+     console.error("Error fatching cities: ", error);
+    throw error;
+  }
+}
 
 export const getCompanies = async (init?: RequestInit) => {
   try {
@@ -134,10 +152,9 @@ export const getCompanies = async (init?: RequestInit) => {
     return data;
   
   } catch (error) {
-    // console.error("Error fatching companies: ", error);
+    console.error("Error fatching companies: ", error);
     throw error;
   }
- 
 };
 
 export const getCompany = (id: string, init?: RequestInit) => {
@@ -154,7 +171,7 @@ export const getPromotions = async (
     `${buildUrl('promotions')}?${stringifyQueryParams(params)}`,
     init,
     );
-    console.log(`Promotions data: ${data}`);
+    // console.log("Promotions data:", JSON.stringify(data, null, 2));
     return data;
   } catch (error) {
     console.error(`Error fatching Promotions: ${error}`);

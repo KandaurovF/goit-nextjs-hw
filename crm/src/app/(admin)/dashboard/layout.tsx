@@ -24,8 +24,8 @@ export default function Layout({
         <div className="col-span-12">{stats}</div>
         <div className="col-span-5">{sales}</div>
         <div className="col-span-7">{categories}</div>
-        <div className="col-span-6">{countries}</div>
-        <div className="col-span-6">{promotions}</div>
+        <div className="col-span-7">{countries}</div>
+        <div className="col-span-5">{promotions}</div>
       </main>
     </div>
   );
