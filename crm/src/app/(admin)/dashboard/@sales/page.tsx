@@ -9,7 +9,7 @@ import {
 
 export interface PageProps {}
 
-export default async function Page({}: PageProps) {
+export default async function Page() {
   const data = await getSummarySales();
 
   return (
@@ -23,11 +23,11 @@ export default async function Page({}: PageProps) {
           </>
         }
       >
-        {data.map(({ companyId, companyTitle, sold, income }) => (
+        {data.map(({ companyId, companyTitle, totalSold, totalIncome }) => (
           <tr key={companyId}>
             <SummaryTableCell>{companyTitle}</SummaryTableCell>
-            <SummaryTableCell align="center">{sold}</SummaryTableCell>
-            <SummaryTableCell align="center">{`$${income}`}</SummaryTableCell>
+            <SummaryTableCell align="center">{totalSold}</SummaryTableCell>
+            <SummaryTableCell align="center">{`$${totalIncome}`}</SummaryTableCell>
           </tr>
         ))}
       </SummaryTable>
