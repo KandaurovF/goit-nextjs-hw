@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import Button from '@/app/components/common/Button';
 import { useRouter } from 'next/navigation';
+import Button from '@/app/components/common/Buttons/Button';
 
 export default function AddCompanyButton() {
   const router = useRouter();

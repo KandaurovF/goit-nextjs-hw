@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import dynamic from 'next/dynamic';
 
@@ -13,24 +14,27 @@ import { GeocodedCityData } from '@/app/components/Map/Geocode';
 export interface PageProps {}
 
 const Page: React.FC<PageProps> = () => {
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [geocodedData, setGeocodedData] = useState<GeocodedCityData[]>([]);
+  //Fetch countries data:
+  const { data: countries = [], isLoading: isLoadingCountries } = useQuery<
+    Country[]
+  >({
+    queryKey: ['countries'],
+    queryFn: getCountries,
+    staleTime: 60000,
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getCountries();
-      setCountries(data);
-
+  // Fetch cities and geocode them:
+  const { data: geocodedData = [], isLoading: isLoadingGeocoded } = useQuery<
+    GeocodedCityData[]
+  >({
+    queryKey: ['geocodedData'],
+    queryFn: async () => {
       const citiesData = await getCities();
-
-      // Dynamically import the geocodeCountries function
       const { geocodeCities } = await import('@/app/components/Map/Geocode');
-      const geocoded = await geocodeCities(citiesData);
-      setGeocodedData(geocoded);
-    };
-
-    fetchData();
-  }, []);
+      return geocodeCities(citiesData);
+    },
+    staleTime: 60000,
+  });
 
   const Map = useMemo(
     () =>

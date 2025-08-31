@@ -2,6 +2,7 @@
 
 import React, { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import ScrollContainer from '../ScrollContainer';
 
 export interface ModalProps {
   children?: React.ReactNode;
@@ -29,7 +30,7 @@ export default function Modal({ show, children, onClose }: ModalProps) {
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
         <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all p-7 mx-auto sm:my-10 sm:w-full sm:max-w-2xl">
-          {children}
+          <ScrollContainer>{children}</ScrollContainer>
         </Dialog.Panel>
       </Dialog>
     </Transition.Root>

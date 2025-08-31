@@ -18,7 +18,7 @@ export default function Layout({
   promotions,
 }: ILayoutProps) {
   return (
-    <div>
+    <>
       {children}
       <main className="grid grid-cols-12 gap-5 py-10 pl-10 pr-7">
         <div className="col-span-12">{stats}</div>
@@ -27,6 +27,6 @@ export default function Layout({
         <div className="col-span-7">{countries}</div>
         <div className="col-span-5">{promotions}</div>
       </main>
-    </div>
+    </>
   );
 }
