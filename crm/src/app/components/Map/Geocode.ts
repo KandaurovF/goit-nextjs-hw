@@ -1,6 +1,6 @@
-import { Country } from '@/app/lib/api'; 
+import { City } from '@/app/lib/api'; 
 
-export interface GeocodedCountryData extends Country {
+export interface GeocodedCityData extends City {
   x: number; // lon
   y: number; // lat
   label: string; // formatted address
@@ -11,7 +11,7 @@ export interface GeocodedCountryData extends Country {
   raw: any; // raw provider result
 }
 
-export async function geocodeCountries(countries: Country[]): Promise<GeocodedCountryData[]> {
+export async function geocodeCities(cities: City[]): Promise<GeocodedCityData[]> {
   if (typeof window === 'undefined') {
     return [];
   }
@@ -20,14 +20,20 @@ export async function geocodeCountries(countries: Country[]): Promise<GeocodedCo
   const provider = new OpenStreetMapProvider();
 
   const geocodeResults = await Promise.all(
-    countries.map(async (country) => {
-      const results = await provider.search({ query: country.countryTitle });
-      return results.length > 0 ? { ...country, ...results[0] } : null;
+    cities.map(async (city) => {
+      try {
+        const results = await provider.search({ query: `${city.title}, ${city.countryTitle}` });
+        return results.length > 0 ? { ...city, ...results[0] } : null;
+      } catch (error) {
+        console.error(`Error geocoding city: ${city.title}, ${city.countryTitle}`, error);
+        return null;
+      }
     })
   );
 
   return geocodeResults.filter(
-    (country): country is GeocodedCountryData =>
-      country !== null && country.x !== undefined && country.y !== undefined,
+    (city): city is GeocodedCityData =>
+      city !== null && city.x !== undefined && city.y !== undefined,
   );
 }
+

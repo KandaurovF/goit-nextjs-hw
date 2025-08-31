@@ -4,6 +4,9 @@ import React from 'react';
 import Image from 'next/image';
 import SidebarItems from './SidebarItems';
 import { usePathname, useRouter } from 'next/navigation';
+import DashboardIcon from '/public/icons/squares.svg';
+import CompaniesIcon from '/public/icons/briefcase.svg';
+import ExitIcon from '/public/icons/arrow-left-on-rectangle.svg';
 
 export default function Sidebar() {
   const router = useRouter();
@@ -27,8 +30,7 @@ export default function Sidebar() {
           <SidebarItems
             current={pathname === '/dashboard'}
             pathname="/dashboard"
-            src="/icons/squares.svg"
-            alt="dashboard icon"
+            iconComponent={<DashboardIcon className="w-[18px] h-[18px]" />}
           >
             Dashboard
           </SidebarItems>
@@ -36,24 +38,19 @@ export default function Sidebar() {
           <SidebarItems
             current={pathname === '/companies'}
             pathname="/companies"
-            src="/icons/briefcase.svg"
-            alt="companies icon"
+            iconComponent={<CompaniesIcon className="w-[18px] h-[18px]" />}
           >
             Companies
           </SidebarItems>
         </ul>
         <button
-          className="flex items-center gap-2 p-6 mx-auto mt-auto"
+          className="flex items-center gap-2 p-6 mx-auto mt-auto group transition-all"
           onClick={hendleExitClick}
         >
-          <Image
-            className=""
-            src="/icons/arrow-left-on-rectangle.svg"
-            alt="exit icon"
-            width={18}
-            height={18}
-          />
-          <span className="font-medium text-white">Exit</span>
+          <ExitIcon className="w-[18px] h-[18px] text-zinc-50 group-hover:text-lime-300" />
+          <span className="font-medium text-white group-hover:text-lime-300">
+            Exit
+          </span>
         </button>
       </div>
     </aside>

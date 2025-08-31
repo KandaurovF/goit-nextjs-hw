@@ -7,22 +7,30 @@ export enum StatCardType {
   Gradient = 'gradient',
 }
 
-export interface IStatCardProps {
+export interface StatCardProps {
   type: StatCardType;
   label: string;
-  counter: number;
+  counter: number | string;
+  isLoading?: boolean;
 }
 
-export default function StatCard({ type, label, counter }: IStatCardProps) {
+export default function StatCard({
+  type,
+  label,
+  counter,
+  isLoading = false,
+}: StatCardProps) {
   return (
     <div
       className={clsx(
         'rounded',
         type === StatCardType.Dark &&
           'pt-3 px-3 bg-gray-900 odd:text-purple-200 even:text-lime-200 text-right',
+
         type === StatCardType.Gradient && [
           styles.gradient,
-          'p-7 bg-purple-200 text-gray-900 text-left',
+          'min-h-[152px] p-7 bg-gray-200 text-gray-900 text-left',
+          isLoading && 'animate-pulse bg-gray-200',
         ],
       )}
     >
@@ -37,6 +45,7 @@ export default function StatCard({ type, label, counter }: IStatCardProps) {
       >
         {label}
       </p>
+
       <p className="text-6xl font-semibold">{counter}</p>
     </div>
   );

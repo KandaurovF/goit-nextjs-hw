@@ -10,4 +10,23 @@
 
 body {
   background-color: #fafafa;
+  user-select: none;
+  /* Для Firefox */
+  scrollbar-width: thin; /* Узкая полоса прокрутки */
+  scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1); /* Цвет полосы прокрутки и фона */
+}
+
+/* Для WebKit браузеров */
+::-webkit-scrollbar {
+  width: 8px; /* Ширина полосы прокрутки */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Цвет полосы прокрутки */
+  border-radius: 50px; /* Скругление */
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1); /* Цвет фона для полосы прокрутки */
+  border-radius: 50px; /* Скругление */
 }

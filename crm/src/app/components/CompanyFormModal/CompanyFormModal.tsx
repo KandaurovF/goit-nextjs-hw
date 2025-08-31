@@ -1,20 +1,21 @@
 'use client';
 
 import React from 'react';
-import CompanyForm, { CompanyFormProps } from './CompanyForm';
+import CompanyForm from './CompanyForm';
 import Modal, { ModalProps } from '@/app/components/common/Modal';
 
-export interface CompanyFormModalProps extends ModalProps {
-  onSubmit: CompanyFormProps['onSubmit'];
+interface CompanyFormModalProps extends ModalProps {
+  isEditMode?: boolean;
 }
 
 export default function CompanyFormModal({
-  onSubmit,
+  onClose,
+  isEditMode,
   ...rest
 }: CompanyFormModalProps) {
   return (
-    <Modal {...rest}>
-      <CompanyForm onSubmit={onSubmit} />
+    <Modal {...rest} onClose={onClose}>
+      <CompanyForm isEditMode={isEditMode} onSubmit={() => onClose()} />
     </Modal>
   );
 }

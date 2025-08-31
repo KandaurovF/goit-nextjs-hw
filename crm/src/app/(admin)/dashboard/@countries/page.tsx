@@ -1,35 +1,40 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import dynamic from 'next/dynamic';
 
-// import Image from 'next/image';
 import clsx from 'clsx';
-import { Country, getCountries } from '@/app/lib/api';
+import { Country, getCountries, getCities } from '@/app/lib/api';
 import DashboardCard from '@/app/components/common/DashboardCard';
 
-import { GeocodedCountryData } from '@/app/components/Map/Geocode';
+import { GeocodedCityData } from '@/app/components/Map/Geocode';
 
 export interface PageProps {}
 
 const Page: React.FC<PageProps> = () => {
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [geocodedData, setGeocodedData] = useState<GeocodedCountryData[]>([]);
+  //Fetch countries data:
+  const { data: countries = [], isLoading: isLoadingCountries } = useQuery<
+    Country[]
+  >({
+    queryKey: ['countries'],
+    queryFn: getCountries,
+    staleTime: 60000,
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getCountries();
-      setCountries(data);
-
-      // Dynamically import the geocodeCountries function
-      const { geocodeCountries } = await import('@/app/components/Map/Geocode');
-      const geocoded = await geocodeCountries(data);
-      setGeocodedData(geocoded);
-    };
-
-    fetchData();
-  }, []);
+  // Fetch cities and geocode them:
+  const { data: geocodedData = [], isLoading: isLoadingGeocoded } = useQuery<
+    GeocodedCityData[]
+  >({
+    queryKey: ['geocodedData'],
+    queryFn: async () => {
+      const citiesData = await getCities();
+      const { geocodeCities } = await import('@/app/components/Map/Geocode');
+      return geocodeCities(citiesData);
+    },
+    staleTime: 60000,
+  });
 
   const Map = useMemo(
     () =>
@@ -55,8 +60,7 @@ const Page: React.FC<PageProps> = () => {
           ))}
         </div>
         {/* <Image width={395} height={260} src="/img/World.png" alt="world" /> */}
-        <div className="bg-white-700 mx-auto  w-[395px] h-[260px]">
-          {/* <Map posix={[4.79029, -75.69003]} /> */}
+        <div className="bg-white-700 mx-auto  w-[495px] h-[260px]">
           <Map data={geocodedData} />
         </div>
       </div>

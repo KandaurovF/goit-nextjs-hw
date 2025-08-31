@@ -2,7 +2,11 @@
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
-    extend: {},
+    extend: {
+      boxShadow: {
+        custom: '1px 1px 5px',
+      },
+    },
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar')],
 };

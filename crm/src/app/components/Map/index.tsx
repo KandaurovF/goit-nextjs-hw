@@ -1,16 +1,15 @@
 'use client';
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { LatLngExpression, LatLngTuple } from 'leaflet';
+import { LatLngExpression } from 'leaflet';
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import 'leaflet-defaulticon-compatibility';
-import { GeocodedCountryData } from './Geocode';
+import { GeocodedCityData } from './Geocode';
 
 interface MapProps {
-  // posix: LatLngExpression | LatLngTuple;
-  data: GeocodedCountryData[];
+  data: GeocodedCityData[];
 }
 
 const Map = ({ data }: MapProps) => {
@@ -27,12 +26,20 @@ const Map = ({ data }: MapProps) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {data.map((country) => (
-        <Marker
-          key={country.countryId}
-          position={[country.y, country.x] as LatLngExpression}
-        >
-          <Popup>{`${country.countryTitle} - ${country.companyCount} companies`}</Popup>
+      {data.map((city) => (
+        <Marker key={city._id} position={[city.y, city.x] as LatLngExpression}>
+          <Popup>
+            <div>
+              <h2>{city.title}</h2>
+              <h3 className="text-[12px]">{city.countryTitle}</h3>
+              <h4 className="mt-2 text-[11px]">Companies:</h4>
+              <ul>
+                {city.companyTitles.map((title, index) => (
+                  <li key={index}>{title}</li>
+                ))}
+              </ul>
+            </div>
+          </Popup>
         </Marker>
       ))}
     </MapContainer>
